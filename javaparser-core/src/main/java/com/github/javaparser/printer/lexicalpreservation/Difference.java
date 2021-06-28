@@ -175,10 +175,20 @@ public class Difference {
                     boolean originalElementIsToken = originalElement instanceof TokenTextElement;
 
                     if (diffElement instanceof Kept) {
-                        applyKeptDiffElement((Kept) diffElement, originalElement, originalElementIsChild, originalElementIsToken);
+                        try{
+                            applyKeptDiffElement((Kept) diffElement, originalElement, originalElementIsChild, originalElementIsToken);
+                        }catch (UnsupportedOperationException e){
+                            System.err.println("Passing error (applyKeptDiffElement): " + e.getLocalizedMessage());
+                            originalIndex++;
+                        }
                     } else if (diffElement instanceof Removed) {
-                        Removed removed = (Removed) diffElement;
-                        applyRemovedDiffElement(removedGroups.get(removed), removed, originalElement, originalElementIsChild, originalElementIsToken);
+                        try{
+                            Removed removed = (Removed) diffElement;
+                            applyRemovedDiffElement(removedGroups.get(removed), removed, originalElement, originalElementIsChild, originalElementIsToken);
+                        }catch (UnsupportedOperationException e){
+                            System.err.println("Passing error (applyRemovedDiffElement): " + e.getLocalizedMessage());
+                            diffIndex++;
+                        }
                     } else {
                         throw new UnsupportedOperationException("" + diffElement + " vs " + originalElement);
                     }
@@ -751,12 +761,12 @@ public class Difference {
                 originalIndex++; // Now we can increment.
             } else if (currentIsNewline && addedTextElement.isChild()) {
                 // here we want to place the new child element after the current new line character.
-                // Except if indentation has been inserted just before this step (in the case where isPreviousElementNewline is true) 
+                // Except if indentation has been inserted just before this step (in the case where isPreviousElementNewline is true)
                 // or if the previous character is a space (it could be the case if we want to replace a statement)
                 // Example 1 : if we insert a statement (a duplicated method call expression ) after this one <code>  value();\n\n</code>
                 // we want to have this result <code>  value();\n  value();\n</code> not <code>  value();\n  \nvalue();</code>
-                // Example 2 : if we want to insert a statement after this one <code>  \n</code> we want to have <code>  value();\n</code> 
-                // not <code>  \nvalue();</code> --> this case appears on member replacement for example 
+                // Example 2 : if we want to insert a statement after this one <code>  \n</code> we want to have <code>  value();\n</code>
+                // not <code>  \nvalue();</code> --> this case appears on member replacement for example
                 if (!isPreviousElementNewline && !isFirstElement && !previousIsWhiteSpace) {
                     originalIndex++; // Insert after the new line
                 }
