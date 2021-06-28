@@ -178,7 +178,7 @@ public class Difference {
                         try{
                             applyKeptDiffElement((Kept) diffElement, originalElement, originalElementIsChild, originalElementIsToken);
                         }catch (UnsupportedOperationException e){
-                            System.err.println("Passing error (applyKeptDiffElement): " + e.getLocalizedMessage());
+                            System.err.println("Handled error (applyKeptDiffElement): " + e.getLocalizedMessage());
                             originalIndex++;
                         }
                     } else if (diffElement instanceof Removed) {
@@ -186,7 +186,7 @@ public class Difference {
                             Removed removed = (Removed) diffElement;
                             applyRemovedDiffElement(removedGroups.get(removed), removed, originalElement, originalElementIsChild, originalElementIsToken);
                         }catch (UnsupportedOperationException e){
-                            System.err.println("Passing error (applyRemovedDiffElement): " + e.getLocalizedMessage());
+                            System.err.println("Handled error (applyRemovedDiffElement): " + e.getLocalizedMessage());
                             diffIndex++;
                         }
                     } else {
