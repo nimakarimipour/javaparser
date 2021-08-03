@@ -178,7 +178,6 @@ public class Difference {
                         try{
                             applyKeptDiffElement((Kept) diffElement, originalElement, originalElementIsChild, originalElementIsToken);
                         }catch (UnsupportedOperationException e){
-                            System.err.println("Handled error of JavaParser (applyKeptDiffElement)");
                             originalIndex++;
                         }
                     } else if (diffElement instanceof Removed) {
@@ -186,7 +185,6 @@ public class Difference {
                             Removed removed = (Removed) diffElement;
                             applyRemovedDiffElement(removedGroups.get(removed), removed, originalElement, originalElementIsChild, originalElementIsToken);
                         }catch (UnsupportedOperationException e){
-                            System.err.println("Handled error of JavaParser (applyRemovedDiffElement)");
                             diffIndex++;
                         }
                     } else {
