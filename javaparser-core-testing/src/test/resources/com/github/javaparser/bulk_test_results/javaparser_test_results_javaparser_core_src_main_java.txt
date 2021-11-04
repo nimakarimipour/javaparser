@@ -1,1 +1,16 @@
-0 problems in 0 files
+com/github/javaparser/ast/body/MethodDeclaration.java
+Lexical error at line 89, column 0.  Encountered: <EOF> after : ""
+
+com/github/javaparser/ast/comments/JavadocComment.java
+Lexical error at line 34, column 32.  Encountered: <EOF> after : ""
+
+com/github/javaparser/ast/expr/AssignExpr.java
+Lexical error at line 56, column 58.  Encountered: "\n" (10), after : "\"snhoie )"
+
+com/github/javaparser/ast/type/UnknownType.java
+Lexical error at line 4, column 37.  Encountered: "\n" (10), after : "\""
+
+com/github/javaparser/ast/validator/language_level_validations/chunks/NoUnderscoresInIntegerLiteralsValidator.java
+Lexical error at line 8, column 48.  Encountered: <EOF> after : ""
+
+5 problems in 5 files
