@@ -36,7 +36,7 @@ import java.util.function.Consumer;
 import static com.github.javaparser.utils.Utils.assertNotNull;
 
 /**
- * An assignment expression. It supports the operators that are found the the AssignExpr.Operator enum.
+ * An assignment expression. It supports the operators that are found the AssignExpr.Operator enum.
  * <br>{@code a=5}
  * <br>{@code time+=500}
  * <br>{@code watch.time+=500}
@@ -196,14 +196,6 @@ public class AssignExpr extends Expression {
     }
 
     @Override
-    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
-    public boolean remove(Node node) {
-        if (node == null)
-            return false;
-        return super.remove(node);
-    }
-
-    @Override
     @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public AssignExpr clone() {
         return (AssignExpr) accept(new CloneVisitor(), null);
@@ -218,8 +210,9 @@ public class AssignExpr extends Expression {
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         if (node == target) {
             setTarget((Expression) replacementNode);
             return true;

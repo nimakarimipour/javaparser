@@ -21,6 +21,11 @@
 
 package com.github.javaparser.symbolsolver.javaparsermodel.contexts;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Optional;
+
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -38,11 +43,6 @@ import com.github.javaparser.symbolsolver.model.resolution.SymbolReference;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.model.resolution.Value;
 import com.github.javaparser.symbolsolver.resolution.SymbolDeclarator;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Optional;
 
 /**
  * @author Federico Tomassetti
@@ -174,8 +174,8 @@ public class StatementContext<N extends Statement> extends AbstractJavaParserCon
             }
         }
 
-        // If nothing is found we should ask the parent context.
-        return solveSymbolAsValueInParentContext(name);
+        // If nothing is found we should ask the grand parent context.
+         return parentContext.getParent().map(context -> context.solveSymbolAsValue(name)).orElse(Optional.empty());
     }
 
     @Override
@@ -261,6 +261,22 @@ public class StatementContext<N extends Statement> extends AbstractJavaParserCon
             ListIterator<Statement> statementListIterator = nodeWithStmt.getStatements().listIterator(position);
             while(statementListIterator.hasPrevious()) {
                 Context prevContext = JavaParserFactory.getContext(statementListIterator.previous(), typeSolver);
+                if (prevContext instanceof BlockStmtContext) {
+                    // Issue #3631
+                    // We have an explicit check for "BlockStmtContext" to avoid resolving the variable x with the
+                    // declaration defined in the block preceding the use of the variable
+                    // For example consider the following:
+                    //
+                    // int x = 0;
+                    // void method() {
+                    // {
+                    // var x = 1;
+                    // System.out.println(x); // prints 1
+                    // }
+                    // System.out.println(x); // prints 0
+                    // }
+                    continue;
+                }
                 if (prevContext instanceof StatementContext) {
                     // We have an explicit check for "StatementContext" to prevent a factorial increase of visited statements.
                     //

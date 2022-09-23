@@ -43,10 +43,12 @@ import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedTypeParameterDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
 import com.github.javaparser.resolution.types.ResolvedReferenceType;
 import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.symbolsolver.core.resolution.Context;
 import com.github.javaparser.symbolsolver.core.resolution.MethodUsageResolutionCapability;
+import com.github.javaparser.symbolsolver.core.resolution.SymbolResolutionCapability;
 import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade;
 import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFactory;
 import com.github.javaparser.symbolsolver.logic.AbstractClassDeclaration;
@@ -59,7 +61,8 @@ import com.github.javaparser.symbolsolver.resolution.SymbolSolver;
 /**
  * @author Federico Tomassetti
  */
-public class JavaParserClassDeclaration extends AbstractClassDeclaration implements MethodUsageResolutionCapability {
+public class JavaParserClassDeclaration extends AbstractClassDeclaration
+        implements MethodUsageResolutionCapability, SymbolResolutionCapability {
 
     ///
     /// Fields
@@ -331,6 +334,11 @@ public class JavaParserClassDeclaration extends AbstractClassDeclaration impleme
     }
 
     @Override
+    public SymbolReference<? extends ResolvedValueDeclaration> solveSymbol(String name, TypeSolver typeSolver) {
+        return getContext().solveSymbol(name);
+    }
+
+    @Override
     public List<ResolvedReferenceType> getAncestors(boolean acceptIncompleteList) {
         List<ResolvedReferenceType> ancestors = new ArrayList<>();
 
@@ -338,7 +346,7 @@ public class JavaParserClassDeclaration extends AbstractClassDeclaration impleme
         if (this.isJavaLangObject()) {
             return ancestors;
         }
-
+        
         Optional<String> qualifiedName = wrappedNode.getFullyQualifiedName();
         if (!qualifiedName.isPresent()) {
             return ancestors;
@@ -389,7 +397,7 @@ public class JavaParserClassDeclaration extends AbstractClassDeclaration impleme
         if (resolvedReferenceTypeDeclaration.isPresent()) {
             ResolvedTypeDeclaration rtd = resolvedReferenceTypeDeclaration.get().asType();
             // do not consider an inner or nested class as an ancestor
-            return !rtd.getQualifiedName().contains(ownQualifiedName);
+            return !rtd.hasInternalType(ownQualifiedName);
         }
         return false;
     }

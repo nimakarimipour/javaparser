@@ -37,7 +37,7 @@ import static com.github.javaparser.utils.Utils.assertNotNull;
 
 /**
  * An expression with an expression on the left, an expression on the right, and an operator in the middle.
- * It supports the operators that are found the the BinaryExpr.Operator enum.
+ * It supports the operators that are found the BinaryExpr.Operator enum.
  * <br>{@code a && b}
  * <br>{@code 155 * 33}
  *
@@ -201,14 +201,6 @@ public class BinaryExpr extends Expression {
     }
 
     @Override
-    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
-    public boolean remove(Node node) {
-        if (node == null)
-            return false;
-        return super.remove(node);
-    }
-
-    @Override
     @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public BinaryExpr clone() {
         return (BinaryExpr) accept(new CloneVisitor(), null);
@@ -223,8 +215,9 @@ public class BinaryExpr extends Expression {
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         if (node == left) {
             setLeft((Expression) replacementNode);
             return true;
